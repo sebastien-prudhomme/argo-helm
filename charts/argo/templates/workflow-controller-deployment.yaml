@@ -63,9 +63,14 @@ spec:
                 fieldPath: metadata.namespace
           resources:
             {{- toYaml .Values.controller.resources | nindent 12 }}
-          {{- if .Values.controller.metricsConfig.enabled }}
+          {{- if or .Values.controller.metricsConfig.enabled .Values.controller.telemetryConfig.enabled }}
           ports:
+          {{- if .Values.controller.metricsConfig.enabled }}
           - containerPort: 8080
+          {{- end }}
+          {{- if .Values.controller.telemetryConfig.enabled }}
+          - containerPort: 8081
+          {{- end }}
           {{- end }}
       {{- with .Values.images.pullSecrets }}
       imagePullSecrets:
